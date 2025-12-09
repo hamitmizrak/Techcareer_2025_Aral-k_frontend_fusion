@@ -74,7 +74,16 @@ npm install express ejs body-parser express-session
 
 ---
 
-##
+## Kullanılacak Teknolojiler
+- **HTML5**
+- **CSS3**
+- **BOOTSTRAP5 (CDN)**
+- **JavaScript (External app.js)**
+- **Node.js**
+- **Express.js**
+- **EJS (Embedded Javascript)**
+- **express-session**
+- **body-parser**
 
 ```sh
 
