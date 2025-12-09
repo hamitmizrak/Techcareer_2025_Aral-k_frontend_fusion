@@ -1,0 +1,3 @@
+F2 ==> Rename
+Ctrl +K =Comment
+Ctrl +K+U =UnComment
