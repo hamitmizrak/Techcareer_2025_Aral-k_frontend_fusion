@@ -19,6 +19,7 @@ const PORT = 3000;
 // Dikkat: Gerçek projelerde veritabanı kullanılmaktadır
 const users = [];
 
+////////////////////////////////////////////////////////////////////
 ////  EJS //////////////////////////////////////////////////////////
 // EJS'yi görünüm motoru(şablon motoru) olarak ayarla (view engine)
 app.set('view engine', 'ejs');
@@ -35,6 +36,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Form verileri (application/x-www-form-urlencoded) için
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+////////////////////////////////////////////////////////////////////
 //// SESSION ////////////////////////////////////////////////////////
 // Express-session'ı kullanarak oturum yönetimini(login olmuş kullanıcılar) etkinleştir
 app.use(
@@ -45,6 +48,7 @@ app.use(
   })
 );
 
+////////////////////////////////////////////////////////////////////
 ///// GLOBAL MIDDLEWARE  ///////////////////////////////////////////
 // Her istekte çalışacak middleware
 app.use((req, res, next) => {
@@ -164,11 +168,11 @@ app.post('/login', (req, res) => {
   // Formdan gelen verileri body üzerinden al
   const { email, password } = req.body;
 
-  ///// ERROR   /////////////////////////////////////////////////////
+  ///// ERROR   ////////////
   // Hata mesajlarını depolamak için bir dizi oluştur
   const errors = [];
 
-  ///// email, password eşleştirilmesi   /////////////////////////////////////////////////////
+  ///// email, password eşleştirilmesi   
   // Hata mesajlarını depolamak için bir dizi oluştur
   const user = users.find((user) => user.email === email && user.password === password);
 
