@@ -63,9 +63,11 @@ node -v
 
 ---
 
-##
+## NPM INSTALL
 
 ```sh
+npm init -y
+npm install express ejs body-parser express-session
 
 ```
 
