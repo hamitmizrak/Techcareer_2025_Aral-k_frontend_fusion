@@ -53,6 +53,15 @@ app.use((req, res, next) => {
 });
 
 ///////////////////////////////////////////////////////////////////
+/////// LINK //////////////////////////////////////////////////////
+// http://localhost:3000
+// http://localhost:3000/home
+// http://localhost:3000/register
+// http://localhost:3000/login
+// http://localhost:3000/admin_page
+// http://localhost:3000/logout
+
+///////////////////////////////////////////////////////////////////
 //// ROUTER (HOME PAGE )///////////////////////////////////////////
 // Ana sayfa (home) için GET isteğini handle etmek
 app.get('/', (req, res) => {
@@ -84,7 +93,6 @@ app.post('/register', (req, res) => {
   const errors = [];
 
   ////  VALIDATION ///////////////////////////////////////////////
-
   // Validation kontrolleri
   if (!name || !email || !password || !confirmPassword) {
     errors.push('Lütfen tüm alanları doldurun.');
@@ -96,7 +104,7 @@ app.post('/register', (req, res) => {
   }
 
   // Validation kontrolleri (email and regex)
-  if (name.trim().length < 8) {
+  if (email.trim().length < 8) {
     errors.push('mail için en az 8 karakter olmalıdır.');
   } else {
     // Basit email format kontrolü
@@ -140,9 +148,83 @@ app.post('/register', (req, res) => {
 
 /////////////////////////////////////////////////////////////////////
 //// PAGES (LOGIN GET/POST )/////////////////////////////////////////
+// http://localhost:3000/login
+// Login Formu için GET isteğini handle etmek
+app.get('/login', (req, res) => {
+  res.render('login', {
+    title: 'Giriş Yap',
+    errors: [],
+    formData: { email: '', password: '' },
+  });
+});
 
+// http://localhost:3000/login
+// login Formu için GET isteğini handle etmek
+app.post('/login', (req, res) => {
+  // Formdan gelen verileri body üzerinden al
+  const { email, password } = req.body;
+
+  ///// ERROR   /////////////////////////////////////////////////////
+  // Hata mesajlarını depolamak için bir dizi oluştur
+  const errors = [];
+
+  ///// email, password eşleştirilmesi   /////////////////////////////////////////////////////
+  // Hata mesajlarını depolamak için bir dizi oluştur
+  const user = users.find((user) => user.email === email && user.password === password);
+
+  // Eğer kullanıcı bulunamazsa hata mesajı ekle
+  if (!user) {
+    errors.push('Geçersiz e-posta veya şifre.');
+  }
+
+  // Eğer hatalar varsa, formu tekrar render et ve hataları göster
+  if (errors.length > 0) {
+    return res.render('login', {
+      title: 'Giriş Yap',
+      errors,
+      formData: { email, password: '' },
+    });
+  }
+
+  req.session.userEmail = user.email;
+
+  // Başarılı girişten sonra admin ana sayfaya yönlendirme
+  res.redirect('/admin_page');
+}); //end login
+
+/////////////////////////////////////////////////////////////////////
+///// ADMIN PAGE (DASHBOARD) ////////////////////////////////////////
+app.get('/admin_page', (req, res) => {
+  // Eğer kullanıcı oturumu açık değilse, login sayfasına yönlendir
+  if (!req.session.userEmail) {
+    return res.redirect('/login');
+  }
+
+  // users dizisinden oturum açan kullanıcıyı bul ve bilgisi al
+  const user = users.find((user) => user.email === req.session.userEmail);
+  console.log(user);
+  //window.alert(user);
+
+  // EJS dashboard sayfasını render et ve kullanıcı bilgilerini gönder
+  res.render('admin_page', {
+    title: 'admin_page',
+    user,
+  });
+}); //end admin_page
+
+/////////////////////////////////////////////////////////////////////
+///// ADMIN (LOGOUT) ////////////////////////////////////////////////
+//http://localhost:3000/logout
+app.get('/logout', (req, res) => {
+  // Oturumu yok et (logout)
+  req.session.destroy((err) => {
+    res.redirect('/'); // Ana sayfaya yönlendir
+  });
+}); //end logout
+
+/////////////////////////////////////////////////////////////////////
 ///// LISTENER /////////////////////////////////////////////////////
 // Sunucuyu belirli bir portta dinlemeye başla
 app.listen(PORT, () => {
   console.log(`Sunucu http://localhost:${PORT} adresinde çalışıyor`);
-});
+}); //end listener
