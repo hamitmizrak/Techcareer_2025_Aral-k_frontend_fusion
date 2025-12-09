@@ -1,3 +1,8 @@
 Npm nedir ?
 Nodejs nedir ?
 Emmet nedir ?
+
+
+-- İkisi arasındaki farklar nelerdir ?
+app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public') ));
