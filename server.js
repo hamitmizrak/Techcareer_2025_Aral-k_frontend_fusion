@@ -19,7 +19,7 @@ const PORT = 3000;
 // Dikkat: Gerçek projelerde veritabanı kullanılmaktadır
 const users = [];
 
-////  EJS /////////////////////
+////  EJS //////////////////////////////////////////////////////////
 // EJS'yi görünüm motoru(şablon motoru) olarak ayarla (view engine)
 app.set('view engine', 'ejs');
 
@@ -35,6 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Form verileri (application/x-www-form-urlencoded) için
 app.use(bodyParser.urlencoded({ extended: true }));
 
+//// SESSION ////////////////////////////////////////////////////////
 // Express-session'ı kullanarak oturum yönetimini(login olmuş kullanıcılar) etkinleştir
 app.use(
   session({
@@ -44,19 +45,15 @@ app.use(
   })
 );
 
-///// GLOBAL MIDDLEWARE  /////////////////////////
+///// GLOBAL MIDDLEWARE  ///////////////////////////////////////////
 // Her istekte çalışacak middleware
 app.use((req, res, next) => {
   // Eğer kullanıcı oturumu açıksa, kullanıcı e-posta adresini yerel değişkene ata
   res.locals.currentUserEmail = req.session.userEmail || null;
 });
 
-
-///// ERROR   /////////////////////////
-  // Hata mesajlarını depolamak için bir dizi oluştur
-  const errors = [];
-
-//// ROUTER (HOME PAGE )//////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+//// ROUTER (HOME PAGE )///////////////////////////////////////////
 // Ana sayfa (home) için GET isteğini handle etmek
 app.get('/', (req, res) => {
   res.render('home', {
@@ -81,6 +78,10 @@ app.get('/register', (req, res) => {
 app.post('/register', (req, res) => {
   // Formdan gelen verileri body üzerinden al
   const { name, email, password, confirmPassword } = req.body;
+
+  ///// ERROR   /////////////////////////////////////////////////////
+  // Hata mesajlarını depolamak için bir dizi oluştur
+  const errors = [];
 
   ////  VALIDATION ///////////////////////////////////////////////
 
@@ -137,11 +138,10 @@ app.post('/register', (req, res) => {
   res.redirect('/login');
 }); //end register
 
-
 /////////////////////////////////////////////////////////////////////
-//// PAGES (LOGIN GET/POST )//////////////////////////////////////
+//// PAGES (LOGIN GET/POST )/////////////////////////////////////////
 
-///// LISTENER /////////////////////////////////
+///// LISTENER /////////////////////////////////////////////////////
 // Sunucuyu belirli bir portta dinlemeye başla
 app.listen(PORT, () => {
   console.log(`Sunucu http://localhost:${PORT} adresinde çalışıyor`);
