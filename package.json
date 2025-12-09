@@ -1,0 +1,35 @@
+{
+  "name": "techcareer_2025_aralik_frontend_fusion",
+  "version": "1.0.0",
+  "description": " html5,css3,js, ejs, express ile frontend fusion uygulamasi",
+  "main": "template.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hamitmizrak/Techcareer_2025_Aral-k_frontend_fusion.git"
+  },
+  "keywords": [
+    "html5",
+    "css3",
+    "javascript",
+    "ejs",
+    "express",
+    "frontend",
+    "fusion"
+  ],
+  "author": "MsC Computer Engineer Hamit MIZRAK",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/hamitmizrak/Techcareer_2025_Aral-k_frontend_fusion/issues"
+  },
+  "homepage": "https://github.com/hamitmizrak/Techcareer_2025_Aral-k_frontend_fusion#readme",
+  "dependencies": {
+    "body-parser": "^2.2.1",
+    "ejs": "^3.1.10",
+    "express": "^5.2.1",
+    "express-session": "^1.18.2"
+  }
+}
