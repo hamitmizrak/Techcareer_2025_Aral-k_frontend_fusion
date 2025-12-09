@@ -44,9 +44,9 @@ git clone https://github.com/hamitmizrak/Techcareer_2025_Aral-k_frontend_fusion
 ## Kurulum Linkleri
 
 ```sh
-Vs Code  :
-Git      :
-Node js  :
+Vs Code  :  https://code.visualstudio.com/download
+Git      :  https://git-scm.com/install/windows
+Node js  :  https://nodejs.org/en/download
 
 ```
 
