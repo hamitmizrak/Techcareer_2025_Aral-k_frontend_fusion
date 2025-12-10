@@ -45,3 +45,60 @@ h2 {
 .form-control.is-valid {
   border-color: #198754; /* Bootstrap success rengi */
 }
+
+/* NAV LEFT - CENTER - RIGHT*/
+#collapsibleNavId {
+  display: flex !important;
+  /* justify-content: space-between; */
+  align-items: center;
+  width: 100%;
+}
+
+/* LEFT */
+.navbar_left_class {
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+}
+
+/* CENTER */
+.navbar_center_class {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 20rem; /*20*16=320px */
+}
+
+.navbar_center_class .form-conrol {
+  min-width: 10rem;
+}
+
+/* RIGHT */
+.navbar_right_class {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.navbar_right_class .nav-item + .nav-item {
+  margin-left: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  /* Küçük ekranlarda navbar öğelerini dikey hizala */
+  #collapsibleNavId {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar_left_class,
+  .navbar_center_class,
+  .navbar_right_class {
+    margin: 0 0 0.5rem 0;
+  }
+
+  .navbar_center_class {
+    justify-content: flex-start;
+  }
+}
