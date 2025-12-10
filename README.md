@@ -63,17 +63,6 @@ node -v
 
 ---
 
-## NPM INSTALL
-
-```sh
-npm init
-npm init -y
-npm install express ejs body-parser express-session
-
-```
-
----
-
 ## Kullanılacak Teknolojiler
 
 - **HTML5**
@@ -88,9 +77,49 @@ npm install express ejs body-parser express-session
 
 ---
 
+## NPM INSTALL
+
+```sh
+npm init
+npm init -y
+npm install express ejs body-parser express-session
+npm i toastify-js
+
+```
+
+---
+
+## SCRIPT
+
+```sh
+package.json ==> Default  ==> "main": "template.js",
+
+package.json ==> DEĞİŞTİR ==> "main": "server.js",
+
+package.json ==>
+  "scripts": {
+    "start": "node server.js",
+    "build": "node scripts/copy-toastify.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+
+
+Terminalde ==> 
+npm install
+npm run build
+npm run start
+
+
+```
+
+---
+
 ## NODE RUNNING
 
 ```sh
+npm run build 
+npm start
+veya
 node server.js
 
 ```

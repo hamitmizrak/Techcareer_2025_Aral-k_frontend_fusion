@@ -2,8 +2,10 @@
   "name": "techcareer_2025_aralik_frontend_fusion",
   "version": "1.0.0",
   "description": " html5,css3,js, ejs, express ile frontend fusion uygulamasi",
-  "main": "template.js",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
+    "build": "node scripts/copy-toastify.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -30,6 +32,7 @@
     "body-parser": "^2.2.1",
     "ejs": "^3.1.10",
     "express": "^5.2.1",
-    "express-session": "^1.18.2"
+    "express-session": "^1.18.2",
+    "toastify-js": "^1.12.0"
   }
 }
