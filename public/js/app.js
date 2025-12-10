@@ -1,13 +1,10 @@
-alert("app.js alanındasınız");
+alert('app.js alanındasınız');
 
 // Toastify
-const showToast =(message, type="info")=>{
-
-}
+const showToast = (message, type = 'info') => {};
 
 // Register form validation
 function initRegisterFormValidation() {
-
   // Register Form üzerinden DOM elemanlarını seç
   const registerForm = document.getElementById('registerForm');
 
@@ -18,12 +15,10 @@ function initRegisterFormValidation() {
 
   // Form submit olayısını yakalasın
   registerForm.addEventListener('submit', function (event) {
-
     // Browser'ın varsayılan form submit davranışını engelle
     event.preventDefault();
 
-
-    // formData: { name: '', email: '', password: '', confirmPassword: '' }, 
+    // formData: { name: '', email: '', password: '', confirmPassword: '' },
     // Register form alanlarındaki input verileri seç
     const nameInput = document.getElementById('name');
     const emailInput = document.getElementById('email');
@@ -34,41 +29,41 @@ function initRegisterFormValidation() {
     let isValid = true;
 
     // isim alanınını en az 3 karkter olup olmadığını kontrol etsin
-    if(!nameInput.value || nameInput.value.trim().length < 3) {
+    if (!nameInput.value || nameInput.value.trim().length < 3) {
       isValid = false;
       alert('İsim en az 3 karakter olmalıdır.');
       nameInput.classList.add('is-invalid');
       nameInput.classList.remove('is-invalid');
-    } else{
+    } else {
       nameInput.classList.remove('is-invalid');
       nameInput.classList.add('is-valid');
     }
 
     // email alanınını en az 8 karkter olup olmadığını kontrol etsin
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if(!emailInput.value || emailRegex.test ||emailInput.value.trim().length < 8 ) {
+    if (!emailInput.value || emailRegex.test) {
       isValid = false;
-      alert('Email en az 8 karakter olmalıdır.');
+      //alert('Email en az 8 karakter olmalıdır.');
       emailInput.classList.add('is-invalid');
       emailInput.classList.remove('is-invalid');
-    } else{
+    } else {
       emailInput.classList.remove('is-invalid');
       emailInput.classList.add('is-valid');
     }
 
     // password alanınını en az 6 karakter olup olmadığını kontrol etsin
-    if(!passwordInput.value || passwordInput.value.trim().length < 6) {
+    if (!passwordInput.value || passwordInput.value.trim().length < 6) {
       isValid = false;
       alert('Şifre en az 6 karakter olmalıdır.');
       passwordInput.classList.add('is-invalid');
       passwordInput.classList.remove('is-invalid');
-    } else{
+    } else {
       passwordInput.classList.remove('is-invalid');
       passwordInput.classList.add('is-valid');
     }
 
     // Şifre ve onay şifresi eşleşme kontrolü
-    if(!passwordInput.value || passwordInput.value !== confirmPasswordInput.value) {
+    if (!passwordInput.value || passwordInput.value !== confirmPasswordInput.value) {
       isValid = false;
       alert('Şifre ve onay şifresi eşleşmiyor.');
       confirmPasswordInput.classList.add('is-invalid');
@@ -79,13 +74,12 @@ function initRegisterFormValidation() {
     // if(isValid === false) {
     //   return;
     // }
-    if(!isValid)  {
+    if (!isValid) {
       return;
     }
-    
+
     // Eğer tüm validasyonlar geçtiyse, formu submit et
     registerForm.submit();
-
   }); // end registerForm submit event listener
 } // end of initRegisterFormValidation
 
@@ -114,7 +108,7 @@ function initLoginFormValidation() {
 
     // email alanınını en az 8 karkter olup olmadığını kontrol etsin
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailInput.value || emailRegex.test || emailInput.value.trim().length < 8) {
+    if (!emailInput.value || emailRegex.test) {
       isValid = false;
       alert('Email en az 8 karakter olmalıdır.');
       emailInput.classList.add('is-invalid');
@@ -148,12 +142,8 @@ function initLoginFormValidation() {
   }); // end LoginForm submit event listener
 } // end of initLoginFormValidation
 
-
 // Sayfa yüklendiğinde form validasyonlarını başlat
 document.addEventListener('DOMContentLoaded', function () {
   initRegisterFormValidation();
   initLoginFormValidation();
 });
-
-
-
