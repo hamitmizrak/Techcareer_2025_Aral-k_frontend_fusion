@@ -1,0 +1,26 @@
+<!-- HEADER FILE -->
+<%- include("partials/header") %>
+
+<!-- REGISTER FILE -->
+<h2 class="mb-4">Admin Panel Sayfası (Sadece Login olanlar görebilir.)</h2>
+
+<!-- div.container>div.row>div.col-md-8.mx-auto>div.card.shadow-sm>div.card-body>h2.card-title.mb-3{Kullanıcı Paneli}+p.card-text{Hoş geldiniz}+strong -->
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title mb-3">Kullanıcı Paneli</h2>
+          <p class="card-text">Hoş geldiniz</p>
+          <strong><%= user.name %></strong>
+          (<%= user.email %> )
+          <a href="/logout" class="btn btn-outline-danger">Çıkış</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER FILE -->
+<%- include("partials/footer") %>
