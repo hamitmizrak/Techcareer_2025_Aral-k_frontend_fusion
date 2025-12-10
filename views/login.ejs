@@ -1,21 +1,65 @@
-
 <!-- HEADER FILE -->
 <%- include("partials/header") %>
 
+<!-- REGISTER FILE -->
+<h2 class="mb-4">Giriş Sayfası</h2>
 
-<!-- MAIN FILE -->
-  <!-- div.row>div.col-md-8.mx-auto>div.card.shadow>div.card-body>h1.card-title.text-center{Hoş geldiniz}+p.card-text.text-primary+p.text-danger{Login, Register veya Admin} -->
- <div class="row">
-  <div class="col-md-8 mx-auto">
-    <div class="card shadow">
-      <div class="card-body">
-        <h1 class="card-title text-center">Hoş geldiniz</h1>
-        <p class="card-text text-primary"></p>
-        <p class="text-danger">Login, Register veya Admin</p>
-      </div>
-    </div>
+<!-- backend'ten oluşacak hataları alert ile gösterelim -->
+<% if(errors && errors.length>0) {%>
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+  <!-- error.msg  -->
+
+  <ul class="mb-1">
+    <% errors.forEach(function(error) { %>
+    <li><%= error%></li>
+    <%}) %>
+  </ul>
+  <%} %>
+</div>
+
+<!-- formData: {  email: '', password: '' }, -->
+<!-- FORM -->
+<form action="/login" id="loginForm" method="POST" novalidate>
+ 
+
+  <!-- EMAIL -->
+  <div class="mb-3">
+    <label for="loginEmail" class="form-label">E-Mail</label>
+    <input
+      type="email"
+      id="loginEmail"
+      name="email"
+      class="form-control"
+      title="email alanı"
+      required
+      placeholder="ornek@domain.com"
+      value="<%= formData.email %>"
+    />
+    <div class="invalid-feedback">Lütfen geçerli bir e-posta giriniz.</div>
   </div>
- </div>
+
+  <!-- PASSWORD -->
+  <div class="mb-3">
+    <label for="loginPassword" class="form-label">Şifre</label>
+    <input
+      type="password"
+      id="loginPassword"
+      name="password"
+      class="form-control"
+      title="Şifre Alanı"
+      minlength="6"
+      required
+      placeholder="Şifrenizi giriniz."
+    />
+    <div class="invalid-feedback">Lütfen şifrenizi giriniz (en az 6 karakter).</div>
+  </div>
+
+  <!-- BUTTON -->
+  <div class="mt-2 mb-2">
+    <button type="reset" class="btn btn-danger me-3">Temizle</button>
+    <button type="submit" class="btn btn-primary">Giriş Yap</button>
+  </div>
+</form>
 
 <!-- FOOTER FILE -->
 <%- include("partials/footer") %>
