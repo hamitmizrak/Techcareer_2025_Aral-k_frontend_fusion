@@ -1,7 +1,31 @@
 alert('app.js alanındasınız');
 
 // Toastify
-const showToast = (message, type = 'info') => {};
+const showToast = (message, type = 'info') => {
+  let background = '#3498db'; // info mavi
+
+  if (type === 'success') {
+    background = '#2ecc71'; // yeşil
+  }
+
+  if (type === 'error') {
+    background = '#e74c3c'; // yeşil
+  }
+
+  if (type === 'warning') {
+    background = '#d3de11ff'; // sarı
+  }
+
+  Toastify({
+    text: message,
+    duration: 3000,
+    gravity: 'bottom', // `top` or `bottom`
+    position: 'right', // `left`, `center` or `right`
+    close: true,
+    backgroundColor: background,
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+  }).showToast();
+};
 
 // Register form validation
 function initRegisterFormValidation() {
@@ -144,6 +168,13 @@ function initLoginFormValidation() {
 
 // Sayfa yüklendiğinde form validasyonlarını başlat
 document.addEventListener('DOMContentLoaded', function () {
+  // TOAST
+  const toastData = window.toastMessage;
+  if(toastData && toastData.message) {
+    showToast(toastData.message, toastData.type);
+  }
+
+  // Initialize form validations
   initRegisterFormValidation();
   initLoginFormValidation();
 });

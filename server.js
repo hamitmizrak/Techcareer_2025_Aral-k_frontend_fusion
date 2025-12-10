@@ -54,6 +54,11 @@ app.use((req, res, next) => {
   // Eğer kullanıcı oturumu açıksa, kullanıcı e-posta adresini yerel değişkene ata
   res.locals.currentUserEmail = req.session.userEmail || null;
 
+  // Toast
+  res.locals.toast = req.session.toast || null;
+  req.session.toast = null;
+  // delete req.session.toastMessage;
+
   // Sonsuz döngüsü engellemekj
   next();
 });
@@ -74,6 +79,7 @@ app.get('/', (req, res) => {
   res.render('home', {
     title: 'Ana Sayfa',
   });
+
 });
 
 /////////////////////////////////////////////////////////////////////
