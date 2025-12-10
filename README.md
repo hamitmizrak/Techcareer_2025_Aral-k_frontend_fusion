@@ -126,9 +126,14 @@ node server.js
 
 ---
 
-##
+## TOASTIFY
 
 ```sh
+npm install toastify-js
+
+node_modules/toastify-js/
+
+public/ventor/toastify
 
 ```
 
