@@ -1,5 +1,10 @@
 alert("app.js alanındasınız");
 
+// Toastify
+const showToast =(message, type="info")=>{
+
+}
+
 // Register form validation
 function initRegisterFormValidation() {
 
