@@ -36,7 +36,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Form verileri (application/x-www-form-urlencoded) için
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
 ////////////////////////////////////////////////////////////////////
 //// SESSION ////////////////////////////////////////////////////////
 // Express-session'ı kullanarak oturum yönetimini(login olmuş kullanıcılar) etkinleştir
@@ -54,6 +53,9 @@ app.use(
 app.use((req, res, next) => {
   // Eğer kullanıcı oturumu açıksa, kullanıcı e-posta adresini yerel değişkene ata
   res.locals.currentUserEmail = req.session.userEmail || null;
+
+  // Sonsuz döngüsü engellemekj
+  next();
 });
 
 ///////////////////////////////////////////////////////////////////
@@ -172,7 +174,7 @@ app.post('/login', (req, res) => {
   // Hata mesajlarını depolamak için bir dizi oluştur
   const errors = [];
 
-  ///// email, password eşleştirilmesi   
+  ///// email, password eşleştirilmesi
   // Hata mesajlarını depolamak için bir dizi oluştur
   const user = users.find((user) => user.email === email && user.password === password);
 
