@@ -2,7 +2,7 @@
   --primary-color: #4caf50;
   --secondary-color: #f44336;
   --font-family: 'Arial, sans-serif';
-  --background-color: #f0f0f0;
+  --background-color: #f8f9fa;
   --text-color: #333;
 }
 
@@ -18,4 +18,30 @@ html {
 }
 
 body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+/* Bu kısım, kartlara hafif gölge ve yuvarlak köşe verir */
+.card {
+  border-radius: 0.5rem; /* Kart köşelerini yuvarlatır */
+  /* Bootstrap shadow-sm zaten ekstra gölge veriyor, istenirse artırılabilir */
+}
+
+/* Bu kısım, h2 başlıkları için üst boşluk tanımlar */
+h2 {
+  margin-top: 1rem;
+}
+
+/* Bu kısım, invalid input'ların kenarlık rengini iyileştirmek için kullanılır */
+.was-validated .form-control:invalid,
+.form-control.is-invalid {
+  border-color: #dc3545; /* Bootstrap danger rengi */
+}
+
+/* Bu kısım, geçerli (valid) input'lar için kenarlık rengini tanımlar */
+.was-validated .form-control:valid,
+.form-control.is-valid {
+  border-color: #198754; /* Bootstrap success rengi */
 }
