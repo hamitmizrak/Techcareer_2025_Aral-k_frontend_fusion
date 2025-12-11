@@ -11,12 +11,16 @@
 // http://localhost:3000/admin_page
 // http://localhost:3000/logout
 
+
+////////////////////////////////////////////////////////////////////
+// ENV
+////////////////////////////////////////////////////////////////////
+// ENV Dosyasını Yükle
+require('dotenv').config();
+
 ////////////////////////////////////////////////////////////////////
 // IMPORT
 ////////////////////////////////////////////////////////////////////
-
-// ENV
-require('dotenv').config();
 
 // Node.js tarafıdnan Express framework dahil eder
 const express = require('express');
@@ -36,10 +40,36 @@ const expressLayouts = require('express-ejs-layouts');
 // Path modülünü dahil et (dosya ve dizin yolları için)
 const path = require('path');
 
+// morgan (istek loglama) - opsiyonel
+ const morgan = require('morgan');
+
+ // Winston logger - opsiyonel
+const {createLogger, format, transports} = require('winston');
+
 ////////////////////////////////////////////////////////////////////
-// APP
+// Winston Logger 
 ////////////////////////////////////////////////////////////////////
 
+// Log formatı: timestamp + level + message
+const logger = createLogger({
+  level: 'info',
+  format: format.combine(
+    format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    format.printf((info) => `${info.timestamp} [${info.level.toUpperCase()}] - ${info.message}`)
+  ),
+  transports: [
+    // Konsola loglama
+    new transports.Console(),
+
+    // logs/app.log dosyasına yaz
+    new transports.File({ filename: 'logs/app.log' }),
+  ],
+});
+
+
+////////////////////////////////////////////////////////////////////
+// Express APP
+////////////////////////////////////////////////////////////////////
 // Yeni bir Express uygulaması oluştur
 const app = express();
 
@@ -49,6 +79,20 @@ const PORT = process.env.PORT || 3000;
 // Bu dizi, kullanıcı verilerini geçici olarak depolamak için (RAM hafıza) kullanılacak
 // Dikkat: Gerçek projelerde veritabanı kullanılmaktadır
 const users = [];
+
+
+////////////////////////////////////////////////////////////////////
+// Morgan (HTTP İstek Logger) 
+// Morgan -> Winston'a yazdırsın
+////////////////////////////////////////////////////////////////////
+app.use(
+  morgan('combined',{
+    stream: {
+      write: (message) => logger.info(message.trim()),
+    },
+  })
+); // Konsola kısa formatta loglama
+
 
 ////////////////////////////////////////////////////////////////////
 // EJS & LAYOUT
@@ -121,6 +165,11 @@ app.use((req, res, next) => {
 ////////////////////////////////////////////////////////////////////
 // Ana sayfa (home) için GET isteğini handle etmek
 app.get('/', (req, res) => {
+
+  // Logger
+  logger.info('Ana sayfa ziyaret edildi.');
+
+  // Home
   res.render('home', {
     title: 'Ana Sayfa',
   });
@@ -192,6 +241,10 @@ app.post('/register', async (req, res) => {
 
   // Eğer hatalar varsa, formu tekrar render et ve hataları göster
   if (errors.length > 0) {
+    // Logger
+    logger.warn(`Başarısız kayıt denemesi: ${email} - Hatalar: ${errors.join(', ')}`);
+
+    // return
     return res.render('register', {
       title: 'Kayıt Ol',
       errors,
@@ -204,6 +257,9 @@ app.post('/register', async (req, res) => {
 
   // Hata yoksa, yeni kullanıcıyı users dizisine ekle
   users.push({ name, email, password: hashedPassword });
+
+  // LOGGER
+  logger.info(`Yeni kullanıcı kaydı: ${email}`);
 
   // Frontend (localstorage) için kullancıı bilgilerie gönder
   req.session.afterRegister = { name, email };
@@ -263,12 +319,20 @@ app.post('/login', async (req, res) => {
 
   // Eğer hatalar varsa, formu tekrar render et ve hataları göster
   if (errors.length > 0) {
+    // Logger
+    logger.warn(`Başarısız giriş denemesi: ${email}`);
+
+    // return
     return res.render('login', {
       title: 'Giriş Yap',
       errors,
       formData: { email, password: '' },
     });
   }
+
+
+  // logger
+  logger.info(`Kullanıcı giriş yaptı: ${email}`);
 
   // Session'a kullanıcı mailini yaz
   req.session.userEmail = user.email;
