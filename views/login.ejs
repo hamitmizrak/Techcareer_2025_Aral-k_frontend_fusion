@@ -1,8 +1,6 @@
-<!-- HEADER FILE -->
-<%- include("partials/header") %>
 
-<div class="container">
-  <div class="row">
+
+
     <!-- REGISTER FILE -->
     <h2 class="mb-4">Giriş Sayfası</h2>
 
@@ -10,40 +8,46 @@
     <% if(errors && errors.length>0) {%>
     <div class="alert alert-primary alert-dismissible fade show" role="alert">
       <!-- error.msg  -->
-
       <ul class="mb-1">
         <% errors.forEach(function(error) { %>
         <li><%= error%></li>
         <%}) %>
       </ul>
+      <button  
+         type="button" 
+         class="btn-close"   
+         data-bs-dismiss="alert"
+         aria-label="Close"></button>
       <%} %>
     </div>
 
     <!-- formData: {  email: '', password: '' }, -->
-    <!-- FORM -->
-    <form action="/login" id="loginForm" method="POST" novalidate>
+    <!-- FORM : novalidate-->
+    <form id="loginForm"  action="/login" method="POST" class="card p-5 shadow-sm">
+
       <!-- EMAIL -->
       <div class="mb-3">
-        <label for="loginEmail" class="form-label">E-Mail</label>
+        <label for="email" class="form-label">E-Mail</label>
         <input
           type="email"
-          id="loginEmail"
+          id="email"
           name="email"
           class="form-control"
           title="email alanı"
+          minlength="8"
           required
           placeholder="ornek@domain.com"
           value="<%= formData.email %>"
         />
-        <div class="invalid-feedback">Lütfen geçerli bir e-posta giriniz.</div>
+        <div class="invalid-feedback text-danger">Lütfen geçerli bir e-posta giriniz.</div>
       </div>
 
       <!-- PASSWORD -->
       <div class="mb-3">
-        <label for="loginPassword" class="form-label">Şifre</label>
+        <label for="password" class="form-label">Şifre</label>
         <input
           type="password"
-          id="loginPassword"
+          id="password"
           name="password"
           class="form-control"
           title="Şifre Alanı"
@@ -51,7 +55,7 @@
           required
           placeholder="Şifrenizi giriniz."
         />
-        <div class="invalid-feedback">Lütfen şifrenizi giriniz (en az 6 karakter).</div>
+        <div class="invalid-feedback text-danger">Lütfen şifrenizi giriniz (en az 6 karakter).</div>
       </div>
 
       <!-- BUTTON -->
@@ -60,8 +64,4 @@
         <button type="submit" class="btn btn-primary">Giriş Yap</button>
       </div>
     </form>
-  </div>
-</div>
 
-<!-- FOOTER FILE -->
-<%- include("partials/footer") %>
