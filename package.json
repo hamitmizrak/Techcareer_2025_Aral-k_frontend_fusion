@@ -7,7 +7,7 @@
     "start": "node server.js",
     "dev": "npm-run-all --parallel dev:server dev:browser",
     "dev:server": "nodemon server.js",
-    "dev:browser": "browser-sync start --proxy \"http://localhost:3000\" --files \"views/**/*.ejs\" \"public/**/*.css\" \"public/**/*.js\"",
+    "dev:browser": "browser-sync start --proxy \"http://localhost:3000\" --port 3001 --files \"views/**/*.ejs\" \"public/**/*.css\" \"public/**/*.js\"",
     "build": "node scripts/copy-toastify.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

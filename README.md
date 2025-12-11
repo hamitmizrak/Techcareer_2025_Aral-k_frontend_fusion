@@ -148,6 +148,7 @@ npm run start
 ```sh
 npm run build
 npm run dev
+npm run start
 
 npm start
 veya

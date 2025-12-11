@@ -1,6 +1,5 @@
-
-
-
+<div class="container p-4">
+  <div class="row">
     <!-- REGISTER FILE -->
     <h2 class="mb-4">Giriş Sayfası</h2>
 
@@ -13,18 +12,13 @@
         <li><%= error%></li>
         <%}) %>
       </ul>
-      <button  
-         type="button" 
-         class="btn-close"   
-         data-bs-dismiss="alert"
-         aria-label="Close"></button>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       <%} %>
     </div>
 
     <!-- formData: {  email: '', password: '' }, -->
     <!-- FORM : novalidate-->
-    <form id="loginForm"  action="/login" method="POST" class="card p-5 shadow-sm">
-
+    <form id="loginForm" action="/login" method="POST" class="card p-5 shadow-sm">
       <!-- EMAIL -->
       <div class="mb-3">
         <label for="email" class="form-label">E-Mail</label>
@@ -64,4 +58,5 @@
         <button type="submit" class="btn btn-primary">Giriş Yap</button>
       </div>
     </form>
-
+  </div>
+</div>

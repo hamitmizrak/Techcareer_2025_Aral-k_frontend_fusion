@@ -3,7 +3,6 @@
 // ======================================================================
 // Import
 // ======================================================================
-const logger = require('../../logger');
 
 // ======================================================================
 // Toastify (showToast)
@@ -263,15 +262,15 @@ document.addEventListener('DOMContentLoaded', function () {
            <a href="/logout" class="btn btn-outline-danger">Çıkış Yap</a>
       </li>
     `;
-  } //end login 
+  } //end login
 
   // Logout linkine tıklanıldığında localStorage'ı temizle
-  document.addEventListener('click', function(event){
+  document.addEventListener('click', function (event) {
     const logoutLink = event.target.closest('a[href="/logout"]');
-    if(logoutLink){
+    if (logoutLink) {
       localStorage.removeItem('user');
     }
-  })
+  });
 
   // Form Validasyonlarını başlat (Initialize form validations)
   initRegisterFormValidation();

@@ -11,7 +11,6 @@
 // http://localhost:3000/admin_page
 // http://localhost:3000/logout
 
-
 ////////////////////////////////////////////////////////////////////
 // ENV
 ////////////////////////////////////////////////////////////////////
@@ -41,13 +40,13 @@ const expressLayouts = require('express-ejs-layouts');
 const path = require('path');
 
 // morgan (istek loglama) - opsiyonel
- const morgan = require('morgan');
+const morgan = require('morgan');
 
- // Winston logger - opsiyonel
-const {createLogger, format, transports} = require('winston');
+// Winston logger - opsiyonel
+const { createLogger, format, transports } = require('winston');
 
 ////////////////////////////////////////////////////////////////////
-// Winston Logger 
+// Winston Logger
 ////////////////////////////////////////////////////////////////////
 
 // Log formatı: timestamp + level + message
@@ -66,7 +65,6 @@ const logger = createLogger({
   ],
 });
 
-
 ////////////////////////////////////////////////////////////////////
 // Express APP
 ////////////////////////////////////////////////////////////////////
@@ -74,25 +72,23 @@ const logger = createLogger({
 const app = express();
 
 // Sunucunun dinleyeceği port numarası (.env varsa onu ekle yoksa 3000 kullan)
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3333;
 
 // Bu dizi, kullanıcı verilerini geçici olarak depolamak için (RAM hafıza) kullanılacak
 // Dikkat: Gerçek projelerde veritabanı kullanılmaktadır
 const users = [];
 
-
 ////////////////////////////////////////////////////////////////////
-// Morgan (HTTP İstek Logger) 
+// Morgan (HTTP İstek Logger)
 // Morgan -> Winston'a yazdırsın
 ////////////////////////////////////////////////////////////////////
 app.use(
-  morgan('combined',{
+  morgan('combined', {
     stream: {
       write: (message) => logger.info(message.trim()),
     },
   })
 ); // Konsola kısa formatta loglama
-
 
 ////////////////////////////////////////////////////////////////////
 // EJS & LAYOUT
@@ -105,7 +101,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Layout
 app.use(expressLayouts);
-app.set('layout', 'layouts'); // varsayılan layout dosyası
+app.set('layout', 'layout'); // varsayılan layout dosyası
 
 ////////////////////////////////////////////////////////////////////
 // STATIC
@@ -165,7 +161,6 @@ app.use((req, res, next) => {
 ////////////////////////////////////////////////////////////////////
 // Ana sayfa (home) için GET isteğini handle etmek
 app.get('/', (req, res) => {
-
   // Logger
   logger.info('Ana sayfa ziyaret edildi.');
 
@@ -181,6 +176,13 @@ app.get('/', (req, res) => {
 // http://localhost:3000/register
 // Register Formu için GET isteğini handle etmek
 app.get('/register', (req, res) => {
+  req.session.toast = {
+    type: 'success',
+    message: 'Anasayfaya hoşgeldiniz',
+  };
+
+  logger.info(`Anaysayfa hoşgeldiniz}`);
+
   res.render('register', {
     title: 'Kayıt Ol',
     errors: [],
@@ -330,7 +332,6 @@ app.post('/login', async (req, res) => {
     });
   }
 
-
   // logger
   logger.info(`Kullanıcı giriş yaptı: ${email}`);
 
@@ -391,11 +392,6 @@ app.get('/admin_page', (req, res) => {
 app.get('/logout', (req, res) => {
   // Oturumu yok et (logout)
   req.session.destroy((err) => {
-    // Toast Mesajı
-    req.session.toast = {
-      type: 'warning',
-      message: 'Admin sayfasına Giriş yapıldı.',
-    };
     res.redirect('/'); // Ana sayfaya yönlendir
   });
 }); //end logout
