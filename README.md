@@ -141,9 +141,16 @@ public/ventor/toastify
 
 ---
 
-##
+## LOGGER
 
 ```sh
+
+Express tabanlı - middlewar tarafında kolay bir şekilde entegre edilmesi için;
+- custpm log,
+- request
+- response bunları anlamlı bir şekilde saklamamız lazım.
+
+Morgan:
 
 ```
 
