@@ -1,6 +1,13 @@
-alert('app.js alanındasınız');
+//alert('app.js alanındasınız');
 
-// Toastify
+// ======================================================================
+// Import
+// ======================================================================
+const logger = require('../../logger');
+
+// ======================================================================
+// Toastify (showToast)
+// ======================================================================
 const showToast = (message, type = 'info') => {
   let background = '#3498db'; // info mavi
 
@@ -26,6 +33,27 @@ const showToast = (message, type = 'info') => {
     stopOnFocus: true, // Prevents dismissing of toast on hover
   }).showToast();
 };
+
+// ======================================================================
+// Auth işlemleri
+// ======================================================================
+(function handleAuthFromServer() {
+  // Register
+  if (window.afterRegister) {
+    localStorage.setItem('user', JSON.stringify(window.afterRegister));
+    showToast('Kayıt başarılı! Hoşgeldiniz ' + window.afterRegister.name, 'success');
+    console.log('afterRegister', window.afterRegister);
+    logger.info(`Kullanıcı kayıt oldu: ${email}`);
+  }
+
+  // Register
+  if (window.afterLogin) {
+    localStorage.setItem('user', JSON.stringify(window.afterLogin));
+    showToast('Giriş başarılı! Hoşgeldiniz ' + window.afterLogin.name, 'success');
+    console.log('afterRegister', window.afterLogin);
+    logger.info(`Kullanıcı giriş yaptı: ${email}`);
+  }
+})();
 
 // Register form validation
 function initRegisterFormValidation() {
@@ -55,7 +83,10 @@ function initRegisterFormValidation() {
     // isim alanınını en az 3 karkter olup olmadığını kontrol etsin
     if (!nameInput.value || nameInput.value.trim().length < 3) {
       isValid = false;
-      alert('İsim en az 3 karakter olmalıdır.');
+
+      showToast('İsim en az 3 karakter olmalıdır.', 'error');
+      logger.warn('Kayıt formu geçersiz: İsim en az 3 karakter olmalıdır.');
+
       nameInput.classList.add('is-invalid');
       nameInput.classList.remove('is-invalid');
     } else {
@@ -65,9 +96,17 @@ function initRegisterFormValidation() {
 
     // email alanınını en az 8 karkter olup olmadığını kontrol etsin
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailInput.value || emailRegex.test) {
+    if (
+      !emailInput.value ||
+      emailInput.value.trim().length < 8 ||
+      !emailRegex.test(emailInput.value)
+    ) {
       isValid = false;
+
+      showToast('Geçerli bir e-posta giriniz (en az 8 karakter olmalıdır).', 'error');
+      logger.warn('Kayıt formu geçersiz: İsim en az 3 karakter olmalıdır.');
       //alert('Email en az 8 karakter olmalıdır.');
+
       emailInput.classList.add('is-invalid');
       emailInput.classList.remove('is-invalid');
     } else {
@@ -78,7 +117,11 @@ function initRegisterFormValidation() {
     // password alanınını en az 6 karakter olup olmadığını kontrol etsin
     if (!passwordInput.value || passwordInput.value.trim().length < 6) {
       isValid = false;
-      alert('Şifre en az 6 karakter olmalıdır.');
+
+      showToast('Şifre  (en az 6 karakter olmalıdır).', 'error');
+      logger.warn('Kayıt formu geçersiz: İsim en az 3 karakter olmalıdır.');
+      //alert('Email en az 8 karakter olmalıdır.');
+
       passwordInput.classList.add('is-invalid');
       passwordInput.classList.remove('is-invalid');
     } else {
@@ -89,12 +132,16 @@ function initRegisterFormValidation() {
     // Şifre ve onay şifresi eşleşme kontrolü
     if (!passwordInput.value || passwordInput.value !== confirmPasswordInput.value) {
       isValid = false;
-      alert('Şifre ve onay şifresi eşleşmiyor.');
+
+      showToast('Şifre ve onay şifresi eşleşmiyor.', 'error');
+      logger.warn('Şifre ve onay şifresi eşleşmiyor..');
+      //alert('Şifre ve onay şifresi eşleşmiyor.');
+
       confirmPasswordInput.classList.add('is-invalid');
       confirmPasswordInput.classList.remove('is-invalid');
     }
 
-    // Eğer form gerçli değilse, submit sen dur hiç bir şey yapma  kullancıya hata gösteriyorum
+    // Eğer form gerçli değilse, submit sen dur hiç bir şey yapma  kullanıcıya hata gösteriyorum
     // if(isValid === false) {
     //   return;
     // }
@@ -107,7 +154,9 @@ function initRegisterFormValidation() {
   }); // end registerForm submit event listener
 } // end of initRegisterFormValidation
 
+// ======================================================================
 // Login form validation
+// ======================================================================
 function initLoginFormValidation() {
   // Login Form üzerinden DOM elemanlarını seç
   const loginForm = document.getElementById('loginForm');
@@ -132,9 +181,17 @@ function initLoginFormValidation() {
 
     // email alanınını en az 8 karkter olup olmadığını kontrol etsin
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailInput.value || emailRegex.test) {
+    if (
+      !emailInput.value ||
+      emailInput.value.trim().length < 8 ||
+      !emailRegex.test(emailInput.value)
+    ) {
       isValid = false;
-      alert('Email en az 8 karakter olmalıdır.');
+
+      showToast('Email en az 8 karakter olmalıdır.', 'error');
+      logger.warn('Email en az 8 karakter olmalıdır...');
+      //alert('Şifre ve onay şifresi eşleşmiyor.');
+
       emailInput.classList.add('is-invalid');
       emailInput.classList.remove('is-invalid');
     } else {
@@ -145,7 +202,11 @@ function initLoginFormValidation() {
     // password alanınını en az 6 karakter olup olmadığını kontrol etsin
     if (!passwordInput.value || passwordInput.value.trim().length < 6) {
       isValid = false;
-      alert('Şifre en az 6 karakter olmalıdır.');
+
+      showToast('Şifre en az 6 karakter olmalıdır..', 'error');
+      logger.warn('Şifre en az 6 karakter olmalıdır..');
+      //alert('Şifre en az 6 karakter olmalıdır.');
+
       passwordInput.classList.add('is-invalid');
       passwordInput.classList.remove('is-invalid');
     } else {
@@ -166,15 +227,53 @@ function initLoginFormValidation() {
   }); // end LoginForm submit event listener
 } // end of initLoginFormValidation
 
+// ======================================================================
+// DOMContentLoaded
+// ======================================================================
 // Sayfa yüklendiğinde form validasyonlarını başlat
 document.addEventListener('DOMContentLoaded', function () {
   // TOAST
   const toastData = window.toastMessage;
-  if(toastData && toastData.message) {
-    showToast(toastData.message, toastData.type);
+  if (toastData && toastData.message) {
+    showToast(toastData.message, toastData.type || 'info');
   }
 
-  // Initialize form validations
+  // LocalStorage'dan kullanıcı bilgisi varsa navbar'da göstersin
+  const userData = localStorage.getItem('user');
+  const navRight = document.getElementById('navRightArea');
+
+  // Eğer Login olunmuşsa
+  if (userData && navRight) {
+    const user = JSON.parse(userData);
+
+    //nav-link
+    navRight.innerHTML = `
+
+      <li class="nav-item  me-1">
+            <span class="navbar-text text-warning fw-bold">
+              Hoşgeldiniz, ${user.name}
+            </span>
+      </li>
+
+       <li class="nav-item  me-1">
+           <a href="/admin_page" class=" btn btn-outline-primary">Admin Paneli</a>
+      </li>
+
+       <li class="nav-item  me-1">
+           <a href="/logout" class="btn btn-outline-danger">Çıkış Yap</a>
+      </li>
+    `;
+  } //end login 
+
+  // Logout linkine tıklanıldığında localStorage'ı temizle
+  document.addEventListener('click', function(event){
+    const logoutLink = event.target.closest('a[href="/logout"]');
+    if(logoutLink){
+      localStorage.removeItem('user');
+    }
+  })
+
+  // Form Validasyonlarını başlat (Initialize form validations)
   initRegisterFormValidation();
   initLoginFormValidation();
 });
