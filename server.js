@@ -1,5 +1,23 @@
 // server.js - Express +EJS Sunucu ayağa kaldırma
 
+////////////////////////////////////////////////////////////////////
+// LINK
+////////////////////////////////////////////////////////////////////
+
+// http://localhost:3000
+// http://localhost:3000/home
+// http://localhost:3000/register
+// http://localhost:3000/login
+// http://localhost:3000/admin_page
+// http://localhost:3000/logout
+
+////////////////////////////////////////////////////////////////////
+// IMPORT
+////////////////////////////////////////////////////////////////////
+
+// ENV
+require('dotenv').config();
+
 // Node.js tarafıdnan Express framework dahil eder
 const express = require('express');
 
@@ -9,81 +27,108 @@ const bodyParser = require('body-parser');
 // Oturum(session) yönetimi için express-session dahil et
 const session = require('express-session');
 
+// Parola güvenliği için bcrypt dahil et
+const bcrypt = require('bcrypt');
+
+// Layot sistemi için
+const expressLayouts = require('express-ejs-layouts');
+
+// Path modülünü dahil et (dosya ve dizin yolları için)
+const path = require('path');
+
+////////////////////////////////////////////////////////////////////
+// APP
+////////////////////////////////////////////////////////////////////
+
 // Yeni bir Express uygulaması oluştur
 const app = express();
 
-// Sunucunun dinleyeceği port numarası
-const PORT = 3000;
+// Sunucunun dinleyeceği port numarası (.env varsa onu ekle yoksa 3000 kullan)
+const PORT = process.env.PORT || 3000;
 
 // Bu dizi, kullanıcı verilerini geçici olarak depolamak için (RAM hafıza) kullanılacak
 // Dikkat: Gerçek projelerde veritabanı kullanılmaktadır
 const users = [];
 
 ////////////////////////////////////////////////////////////////////
-////  EJS //////////////////////////////////////////////////////////
+// EJS & LAYOUT
+////////////////////////////////////////////////////////////////////
 // EJS'yi görünüm motoru(şablon motoru) olarak ayarla (view engine)
 app.set('view engine', 'ejs');
 
 // EJS view dosyalarının bulunduğu klasörü ayarla
-const path = require('path');
 app.set('views', path.join(__dirname, 'views'));
 
+// Layout
+app.use(expressLayouts);
+app.set('layout', 'layouts'); // varsayılan layout dosyası
+
+////////////////////////////////////////////////////////////////////
+// STATIC
+////////////////////////////////////////////////////////////////////
 // Statik dosyalar için 'public' klasörünü kullan
 // app.use(express.static('public'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+////////////////////////////////////////////////////////////////////
+// BODY PARSER
+////////////////////////////////////////////////////////////////////
 // Body-parser'ı kullanarak URL kodlu verileri ayrıştır(parse)
 // Form verileri (application/x-www-form-urlencoded) için
 app.use(bodyParser.urlencoded({ extended: true }));
 
 ////////////////////////////////////////////////////////////////////
-//// SESSION ////////////////////////////////////////////////////////
+// SESSION
+////////////////////////////////////////////////////////////////////
 // Express-session'ı kullanarak oturum yönetimini(login olmuş kullanıcılar) etkinleştir
 app.use(
   session({
-    secret: 'gizliAnahtar', // Oturum gizliliği için bir gizli anahtar
+    secret: process.env.SESSION_SECRET || 'gizliAnahtar', // Oturum gizliliği için bir gizli anahtar
     resave: false, // her istektre session tekrar kaydetme
     saveUninitialized: true, // Boş(kullanılmayan) yeni oturumları kaydet
   })
 );
 
 ////////////////////////////////////////////////////////////////////
-///// GLOBAL MIDDLEWARE  ///////////////////////////////////////////
+// GLOBAL MIDDLEWARE
+// Her istekte çalışacak kodlar buraya
+////////////////////////////////////////////////////////////////////
+
 // Her istekte çalışacak middleware
 app.use((req, res, next) => {
   // Eğer kullanıcı oturumu açıksa, kullanıcı e-posta adresini yerel değişkene ata
   res.locals.currentUserEmail = req.session.userEmail || null;
 
-  // Toast
+  // Toast Mesajı (Örnek: Başarıyla giriş yapıldı)
   res.locals.toast = req.session.toast || null;
-  req.session.toast = null;
   // delete req.session.toastMessage;
+
+  // LocalStorage için
+  res.locals.afterRegister = req.session.afterRegister || null;
+  res.locals.afterLogin = req.session.afterLogin || null;
+
+  // Temizle
+  req.session.toast = null;
+  req.session.afterRegister = null;
+  req.session.afterLogin = null;
 
   // Sonsuz döngüsü engellemekj
   next();
 });
 
-///////////////////////////////////////////////////////////////////
-/////// LINK //////////////////////////////////////////////////////
-// http://localhost:3000
-// http://localhost:3000/home
-// http://localhost:3000/register
-// http://localhost:3000/login
-// http://localhost:3000/admin_page
-// http://localhost:3000/logout
-
-///////////////////////////////////////////////////////////////////
-//// ROUTER (HOME PAGE )///////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+// ROUTER (HOME)
+////////////////////////////////////////////////////////////////////
 // Ana sayfa (home) için GET isteğini handle etmek
 app.get('/', (req, res) => {
   res.render('home', {
     title: 'Ana Sayfa',
   });
-
 });
 
-/////////////////////////////////////////////////////////////////////
-//// ROUTER AND PAGES (REGİSTER GET/POST )///////////////////////////
+////////////////////////////////////////////////////////////////////
+// ROUTER (REGİSTER GET )
+////////////////////////////////////////////////////////////////////
 // http://localhost:3000/register
 // Register Formu için GET isteğini handle etmek
 app.get('/register', (req, res) => {
@@ -94,36 +139,39 @@ app.get('/register', (req, res) => {
   });
 });
 
+////////////////////////////////////////////////////////////////////
+// ROUTER (REGİSTER POST )
+////////////////////////////////////////////////////////////////////
 // http://localhost:3000/register
 // Register Formu için GET isteğini handle etmek
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
   // Formdan gelen verileri body üzerinden al
   const { name, email, password, confirmPassword } = req.body;
 
-  ///// ERROR   /////////////////////////////////////////////////////
+  // ERROR
   // Hata mesajlarını depolamak için bir dizi oluştur
   const errors = [];
 
-  ////  VALIDATION ///////////////////////////////////////////////
+  //  VALIDATION
   // Validation kontrolleri
   if (!name || !email || !password || !confirmPassword) {
     errors.push('Lütfen tüm alanları doldurun.');
   }
 
   // Validation kontrolleri (name)
-  if (name.trim().length < 3) {
-    errors.push('isim en az 3 karakter olmalıdır.');
+  if (!name || name.trim().length < 3) {
+    errors.push('İsim en az 3 karakter olmalıdır.');
   }
 
   // Validation kontrolleri (email and regex)
-  if (email.trim().length < 8) {
-    errors.push('mail için en az 8 karakter olmalıdır.');
-  } else {
-    // Basit email format kontrolü
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      errors.push('Geçerli bir e-posta adresi girin.');
-    }
+  if (!email || email.trim().length < 8) {
+    errors.push('Mail için en az 8 karakter olmalıdır.');
+  }
+
+  // Basit email format kontrolü
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (email && !emailRegex.test(email)) {
+    errors.push('Geçerli bir e-posta adresi girin.');
   }
 
   // Aynı mail ile kayıtlı kullanıcı kontrolü
@@ -133,7 +181,7 @@ app.post('/register', (req, res) => {
   }
 
   // Validation kontrolleri (password)
-  if (password.trim().length < 6) {
+  if (!password || password.trim().length < 6) {
     errors.push('şifre için en az 6 karakter olmalıdır.');
   }
 
@@ -151,15 +199,30 @@ app.post('/register', (req, res) => {
     });
   }
 
-  // Hata yoksa, yeni kullanıcıyı users dizisine ekle
-  users.push({ name, email, password });
+  // Şifreyi hashle
+  const hashedPassword = await bcrypt.hash(password, 10);
 
+  // Hata yoksa, yeni kullanıcıyı users dizisine ekle
+  users.push({ name, email, password: hashedPassword });
+
+  // Frontend (localstorage) için kullancıı bilgilerie gönder
+  req.session.afterRegister = { name, email };
+
+  // Toast Mesajı
+  // req.session.toast = 'Kayıt işlemi başarılı! Giriş yapabilirsiniz.';
+  req.session.toast = {
+    type: 'success',
+    message: 'Kayıt işlemi başarılı! Giriş yapabilirsiniz.',
+  };
+
+  // Redirect (Yönlendirme)
   // Başarılı kayıt olduktan sonra login sayafsına yönlendirmesi gerekiyor
   res.redirect('/login');
 }); //end register
 
-/////////////////////////////////////////////////////////////////////
-//// PAGES (LOGIN GET/POST )/////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+// ROUTER (LOGIN GET )
+////////////////////////////////////////////////////////////////////
 // http://localhost:3000/login
 // Login Formu için GET isteğini handle etmek
 app.get('/login', (req, res) => {
@@ -170,23 +233,32 @@ app.get('/login', (req, res) => {
   });
 });
 
+////////////////////////////////////////////////////////////////////
+// ROUTER (LOGIN POST )
+////////////////////////////////////////////////////////////////////
 // http://localhost:3000/login
 // login Formu için GET isteğini handle etmek
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
   // Formdan gelen verileri body üzerinden al
   const { email, password } = req.body;
 
-  ///// ERROR   ////////////
+  // ERROR
   // Hata mesajlarını depolamak için bir dizi oluştur
   const errors = [];
 
-  ///// email, password eşleştirilmesi
+  // email, password eşleştirilmesi
   // Hata mesajlarını depolamak için bir dizi oluştur
-  const user = users.find((user) => user.email === email && user.password === password);
+  // const user = users.find((user) => user.email === email && user.password === password);
+  const user = users.find((user) => user.email === email);
 
   // Eğer kullanıcı bulunamazsa hata mesajı ekle
   if (!user) {
     errors.push('Geçersiz e-posta veya şifre.');
+  } else {
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      errors.push('Geçersiz e-posta veya şifre.');
+    }
   }
 
   // Eğer hatalar varsa, formu tekrar render et ve hataları göster
@@ -198,24 +270,48 @@ app.post('/login', (req, res) => {
     });
   }
 
+  // Session'a kullanıcı mailini yaz
   req.session.userEmail = user.email;
+
+  // Frontend (localstorage) için kullancıı bilgilerie gönder
+  req.session.afterLogin = { name: user.name, email: user.email };
+
+  // Toast Mesajı
+  req.session.toast = {
+    type: 'success',
+    message: 'Giriş işlemi başarılı! Admin Paneline Yönlendiriliyorsunuz.',
+  };
 
   // Başarılı girişten sonra admin ana sayfaya yönlendirme
   res.redirect('/admin_page');
 }); //end login
 
+////////////////////////////////////////////////////////////////////
+// ROUTER (ADMIN PAGE)
+////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
 ///// ADMIN PAGE (DASHBOARD) ////////////////////////////////////////
 app.get('/admin_page', (req, res) => {
   // Eğer kullanıcı oturumu açık değilse, login sayfasına yönlendir
   if (!req.session.userEmail) {
+    // Login olmadan admin_page sayfasına erişmeye çalışırsa
+    req.session.toast = {
+      type: 'warning',
+      message: 'Lütfen önce giriş yapın.',
+    };
     return res.redirect('/login');
   }
 
   // users dizisinden oturum açan kullanıcıyı bul ve bilgisi al
   const user = users.find((user) => user.email === req.session.userEmail);
-  console.log(user);
+  // console.log(user);
   //window.alert(user);
+
+  // Toast Mesajı
+  req.session.toast = {
+    type: 'info',
+    message: 'Admin sayfasına Giriş yapıldı.',
+  };
 
   // EJS dashboard sayfasını render et ve kullanıcı bilgilerini gönder
   res.render('admin_page', {
@@ -224,18 +320,26 @@ app.get('/admin_page', (req, res) => {
   });
 }); //end admin_page
 
-/////////////////////////////////////////////////////////////////////
-///// ADMIN (LOGOUT) ////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+// ROUTER (LOGOUT )
+////////////////////////////////////////////////////////////////////
 //http://localhost:3000/logout
 app.get('/logout', (req, res) => {
   // Oturumu yok et (logout)
   req.session.destroy((err) => {
+    // Toast Mesajı
+    req.session.toast = {
+      type: 'warning',
+      message: 'Admin sayfasına Giriş yapıldı.',
+    };
     res.redirect('/'); // Ana sayfaya yönlendir
   });
 }); //end logout
 
-/////////////////////////////////////////////////////////////////////
-///// LISTENER /////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+// LISTENER
+////////////////////////////////////////////////////////////////////
+
 // Sunucuyu belirli bir portta dinlemeye başla
 app.listen(PORT, () => {
   console.log(`Sunucu http://localhost:${PORT} adresinde çalışıyor`);
