@@ -104,7 +104,7 @@ package.json ==>
   },
 
 
-Terminalde ==> 
+Terminalde ==>
 npm install
 npm run build
 npm run start
@@ -117,7 +117,9 @@ npm run start
 ## NODE RUNNING
 
 ```sh
-npm run build 
+npm run build
+npm run dev
+
 npm start
 veya
 node server.js

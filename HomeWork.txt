@@ -6,3 +6,5 @@ Emmet nedir ?
 -- İkisi arasındaki farklar nelerdir ?
 app.use(express.static('public'));
 app.use(express.static(path.join(__dirname, 'public') ));
+
+dependencies ile devDependencies arasındaki farklar nelerdir ?

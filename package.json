@@ -5,6 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "dev": "npm-run-all --parallel dev:server dev:browser",
+    "dev:server": "nodemon server.js",
+    "dev:browser": "browser-sync start --proxy \"http://localhost:3000\" --files \"views/**/*.ejs\" \"public/**/*.css\" \"public/**/*.js\"",
     "build": "node scripts/copy-toastify.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -29,10 +32,18 @@
   },
   "homepage": "https://github.com/hamitmizrak/Techcareer_2025_Aral-k_frontend_fusion#readme",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "body-parser": "^2.2.1",
+    "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "express": "^5.2.1",
+    "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.18.2",
     "toastify-js": "^1.12.0"
+  },
+  "devDependencies": {
+    "browser-sync": "^3.0.4",
+    "nodemon": "^3.1.11",
+    "npm-run-all": "^4.1.5"
   }
 }
