@@ -1,8 +1,5 @@
-<!-- HEADER FILE -->
-<%- include("partials/header") %>
 
-<div class="container">
-  <div class="row">
+
     <!-- REGISTER FILE -->
     <h2 class="mb-4">Kayıt Ol Sayfası</h2>
 
@@ -10,41 +7,37 @@
     <% if(errors && errors.length>0) {%>
     <div class="alert alert-primary alert-dismissible fade show" role="alert">
       <!-- error.msg  -->
-
       <ul class="mb-1">
         <% errors.forEach(function(error) { %>
         <li><%= error%></li>
         <%}) %>
       </ul>
-
-      <!-- <button
-      type="button"
-      class="btn-close"
-      data-bs-dismiss="alert"
-      aria-label="Close"
-    ></button> -->
-      <!-- <strong>Holy guacamole!</strong> You should check in on some of
-    those fields below. -->
+ <button  
+         type="button" 
+         class="btn-close"   
+         data-bs-dismiss="alert"
+         aria-label="Close"></button>
       <%} %>
     </div>
 
     <!-- formData: { name: '', email: '', password: '', confirmPassword: '' }, -->
-    <!-- FORM -->
-    <form action="/register" id="registerForm" method="POST" novalidate>
+    <!-- FORM (novalidate)-->
+    <form action="/register" id="registerForm" method="POST" class="card  p-5 shadow-sm" >
+     
       <!-- NAME -->
       <div class="mb-3">
-        <label for="name" class="form-label">isim</label>
+        <label for="name" class="form-label">Ad Soyisim</label>
         <input
+          type="text"
           id="name"
           name="name"
-          type="text"
           class="form-control"
           title="isim alanı"
           minlength="3"
           placeholder="İsminizi giriniz."
           value="<%= formData.name %>"
         />
-        <div class="invalid-feedback">Lütfen geçerli bir isim giriniz (en az 3 karakter).</div>
+        <div class="invalid-feedback text-danger">Lütfen geçerli bir isim giriniz (en az 3 karakter).</div>
       </div>
 
       <!-- EMAIL -->
@@ -80,7 +73,7 @@
         <div class="invalid-feedback">Lütfen şifrenizi giriniz (en az 6 karakter).</div>
       </div>
 
-      <!-- REPASSWORD -->
+      <!-- CONFIRM PASSWORD -->
       <div class="mb-3">
         <label for="confirmPassword" class="form-label">Şifre Tekrarı</label>
         <input
@@ -93,7 +86,7 @@
           required
           placeholder="Şifrenizi Tekrar giriniz."
         />
-        <div class="invalid-feedback">Lütfen şifrenizi tekrar giriniz (en az 6 karakter).</div>
+        <div class="invalid-feedback text-danger">Lütfen şifrenizi tekrar giriniz (en az 6 karakter).</div>
       </div>
 
       <!-- BUTTON -->
@@ -104,6 +97,3 @@
     </form>
   </div>
 </div>
-
-<!-- FOOTER FILE -->
-<%- include("partials/footer") %>
